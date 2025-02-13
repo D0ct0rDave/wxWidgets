@@ -17,15 +17,31 @@
     #ifdef _UNICODE
         #ifdef WXUSINGDLL
             #ifdef _DEBUG
-                #include "../../../lib/vc_dll/mswud/wx/setup.h"
+                #if defined(_M_AMD64) && (_M_AMD64 == 100) && !defined(_M_ARM64EC)
+                #include "../../../lib/vc_dll/x64/mswud/wx/setup.h"
+                #else
+                #include "../../../lib/vc_dll/win32/mswud/wx/setup.h"
+                #endif
             #else
-                #include "../../../lib/vc_dll/mswu/wx/setup.h"
+                #if defined(_M_AMD64) && (_M_AMD64 == 100) && !defined(_M_ARM64EC)
+                #include "../../../lib/vc_dll/x64/mswu/wx/setup.h"
+                #else
+                #include "../../../lib/vc_dll/win32/mswu/wx/setup.h"
+                #endif
             #endif
         #else
             #ifdef _DEBUG
-                #include "../../../lib/vc_lib/mswud/wx/setup.h"
+                #if defined(_M_AMD64) && (_M_AMD64 == 100) && !defined(_M_ARM64EC)
+                #include "../../../lib/vc_lib/x64/mswud/wx/setup.h"
+                #else
+                #include "../../../lib/vc_lib/win32/mswud/wx/setup.h"
+                #endif
             #else
-                #include "../../../lib/vc_lib/mswu/wx/setup.h"
+                #if defined(_M_AMD64) && (_M_AMD64 == 100) && !defined(_M_ARM64EC)
+                #include "../../../lib/vc_lib/x64/mswu/wx/setup.h"
+                #else
+                #include "../../../lib/vc_lib/win32/mswu/wx/setup.h"
+                #endif
             #endif
         #endif
 
