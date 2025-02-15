@@ -25,6 +25,9 @@
 #endif
 
 #if wxUSE_FONTMAP
+#include <vector>
+class wxFontEnumeratorHelper;
+static std::vector<wxFontEnumeratorHelper*> s_fontEnumeratorObjectBuffer;
 
 #ifndef WX_PRECOMP
     #include "wx/gdicmn.h"
@@ -168,8 +171,14 @@ void wxFontEnumeratorHelper::DoEnumerate()
     lf.lfCharSet = (BYTE)m_charset;
     wxStrncpy(lf.lfFaceName, m_facename, WXSIZEOF(lf.lfFaceName));
     lf.lfPitchAndFamily = 0;
+    
+    size_t idx = s_fontEnumeratorObjectBuffer.size();
+    s_fontEnumeratorObjectBuffer.push_back(this);
+
     ::EnumFontFamiliesEx(hDC, &lf, (wxFONTENUMPROC)wxFontEnumeratorProc,
-                         (LPARAM)this, 0 /* reserved */) ;
+                         (LPARAM)idx, 0 /* reserved */);
+
+    s_fontEnumeratorObjectBuffer.erase(s_fontEnumeratorObjectBuffer.begin() + idx);
 #endif // Win32/CE
 
     ::ReleaseDC(NULL, hDC);
@@ -283,8 +292,7 @@ int CALLBACK wxFontEnumeratorProc(LPLOGFONT lplf, LPTEXTMETRIC lptm,
     }
 #endif // 0
 
-    wxFontEnumeratorHelper *fontEnum = (wxFontEnumeratorHelper *)lParam;
-
+    wxFontEnumeratorHelper *fontEnum = s_fontEnumeratorObjectBuffer[lParam];
     return fontEnum->OnFont(lplf, lptm);
 }
 #endif
